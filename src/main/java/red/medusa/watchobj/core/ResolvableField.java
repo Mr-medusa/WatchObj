@@ -8,6 +8,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * 解析具体的泛型字段类型
+ *
  * @author GHHu
  * @date 2023/4/3
  */
@@ -197,6 +199,7 @@ public class ResolvableField {
     }
 
     private static final Map<Class<?>, Class<?>> primitiveTypeToWrapperMap = new IdentityHashMap<>(8);
+
     static {
         primitiveTypeToWrapperMap.put(boolean.class, Boolean.class);
         primitiveTypeToWrapperMap.put(byte.class, Byte.class);

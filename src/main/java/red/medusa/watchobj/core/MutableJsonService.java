@@ -11,7 +11,9 @@ import java.util.stream.Collectors;
 
 
 /**
- * @date 2023/4/4
+ * @author GHHu
+ * @date 2023/5/16
+ * @see FieldPropertyValueHolder
  */
 public class MutableJsonService {
     private final MutableJson mutableJson = new MutableJson();
@@ -27,6 +29,9 @@ public class MutableJsonService {
     public static final String SERVER_WEBSOCKET_PORT = "SERVER_WEBSOCKET_PORT";
 
     private final Set<Object> watchedObjects = Collections.synchronizedSet(new LinkedHashSet<>());
+    /**
+     * 字段属性值包装类集合
+     */
     private final List<FieldPropertyValueHolder> watchedFields = Collections.synchronizedList(new LinkedList<>());
 
     private boolean enableMutableJson = true;

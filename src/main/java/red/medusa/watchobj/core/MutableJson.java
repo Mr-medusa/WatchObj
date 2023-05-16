@@ -15,17 +15,36 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.function.Predicate;
 
 /**
+ * 构建 PropertyValue Json 核心类
+ *
  * @author GHHu
  * @date 2023/3/31
  */
 public class MutableJson {
+    /**
+     * PropertyValue 数据更新事件队列
+     */
     public final BlockingQueue<List<CollectionUpdateData>> eventQueue = new LinkedBlockingDeque<>();
+    /**
+     * 引用队列,对象 gc 后回收掉 PropertyValue
+     *
+     * @see MutableJsonService#enableUpdateWeakReferences()
+     */
     private final ReferenceQueue<Object> queue = new ReferenceQueue<>();
-    // 容纳Object及其容器类型
+    // 容纳 Object 及其容器类型
     private final Map<WeakReference<Object>, List<PropertyValue>> referencePropertyValues = new ConcurrentHashMap<>();
+    /**
+     * 父容器 PropertyValue 缓存
+     */
     private final Map<Object, PropertyValue> parentContainingPropertyValues = Collections.synchronizedMap(new WeakHashMap<>());
+    /**
+     * 构建过程中从父容器缓存中移除的 PropertyValue 缓存
+     */
     private final Map<Object, PropertyValue> removedContainingPropertyValues = Collections.synchronizedMap(new WeakHashMap<>());
     private final Map<Object, List<PropertyValue>> unableControlPropertyValues = Collections.synchronizedMap(new WeakHashMap<>());
+    /**
+     * 针对集合类型的 PropertyValue 缓存
+     */
     private final List<PropertyValue> collectionToPropertyValues = Collections.synchronizedList(new ArrayList<>());
     public static Set<Class<?>> primitiveTypes = new HashSet<>(32);
 

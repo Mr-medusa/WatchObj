@@ -5,8 +5,13 @@ import java.util.Map;
 import java.util.StringJoiner;
 
 /**
+ * 字段属性值包装类,字段值 set 后使用
+ *
  * @author <a href="mail"></a>
- * @see MutableJsonService#roll(Object, String, Object, Class)
+ * @see MutableJsonService#watchedFields
+ *
+ * @author GHHu
+ * @date 2023/5/16
  */
 public class FieldPropertyValueHolder {
     public final PropertyValue propertyValue;
