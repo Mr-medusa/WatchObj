@@ -6,8 +6,13 @@ import red.medusa.watchobj.core.web.SyncType;
 import java.util.StringJoiner;
 
 /**
+ * MutableJson 发生的更新数据集
+ *
  * @author GHHu
  * @date 2023/3/31
+ *
+ * @see MutableJson#eventQueue
+ * @see MutableJsonService
  */
 public class CollectionUpdateData {
     @JSONField(ordinal = 1)

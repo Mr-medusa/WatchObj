@@ -12,6 +12,7 @@ import io.netty.handler.stream.ChunkedWriteHandler;
 import red.medusa.watchobj.core.Logger;
 import red.medusa.watchobj.server.handler.HttpServerHandler;
 import red.medusa.watchobj.server.handler.TextWebSocketHandler;
+import red.medusa.watchobj.server.handler2.WebSocketServerInitializer;
 
 public class HttpServer {
     public final int httpServerPost;
@@ -23,6 +24,10 @@ public class HttpServer {
     }
 
     public void bind() {
+        if (true) {
+            bind2();
+            return;
+        }
         EventLoopGroup boss = new NioEventLoopGroup();
         EventLoopGroup worker = new NioEventLoopGroup();
         try {
@@ -37,7 +42,8 @@ public class HttpServer {
                                 pipeline.addLast(new HttpServerCodec());
                                 pipeline.addLast(new HttpObjectAggregator(61024));
                                 pipeline.addLast(new HttpServerHandler());
-                            } else {
+                            }
+                            else {
                                 pipeline.addLast(new HttpServerCodec());
                                 pipeline.addLast(new ChunkedWriteHandler());
                                 pipeline.addLast(new HttpObjectAggregator(8192));
@@ -56,6 +62,26 @@ public class HttpServer {
             e.printStackTrace();
         }
     }
+
+    public void bind2() {
+        EventLoopGroup bossGroup = new NioEventLoopGroup(1);
+        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        try {
+            ServerBootstrap b = new ServerBootstrap();
+            b.group(bossGroup, workerGroup)
+                    .channel(NioServerSocketChannel.class)
+                    .childHandler(new WebSocketServerInitializer());
+            Channel ch = b.bind(httpServerPost).sync().channel();
+            Logger.debug("Open your web browser and navigate to " + "http://localhost:" + httpServerPost + "/index.html");
+            ch.closeFuture().sync();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            bossGroup.shutdownGracefully();
+            workerGroup.shutdownGracefully();
+        }
+    }
+
 
     public static void main(String[] args) {
         new HttpServer(8888, 9999).bind();

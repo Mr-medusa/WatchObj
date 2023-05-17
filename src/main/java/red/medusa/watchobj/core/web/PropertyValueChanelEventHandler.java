@@ -10,10 +10,21 @@ import red.medusa.watchobj.core.Logger;
 import red.medusa.watchobj.core.MutableJson;
 import red.medusa.watchobj.core.MutableJsonService;
 import red.medusa.watchobj.core.PropertyValue;
+import red.medusa.watchobj.server.handler.TextWebSocketHandler;
 
 import java.lang.reflect.Array;
 import java.util.*;
 
+/**
+ * 同步 Netty Server 数据更新的事件处理器
+ * 将更新事件写入到 MutableJson 或 其它 WebService Channel
+ *
+ * @author GHHu
+ * @date 2023/5/17
+ * @see SyncObjectHandler
+ * @see TextWebSocketHandler
+ * @see EventType
+ */
 public class PropertyValueChanelEventHandler {
     private final Set<Channel> channels = Collections.synchronizedSet(new HashSet<>());
 

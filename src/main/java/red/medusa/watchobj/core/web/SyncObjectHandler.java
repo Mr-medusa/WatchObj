@@ -13,16 +13,25 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * 同步 PropertyValue 数据更新的事件处理器，将更新事件写入到 Netty Channel
+ *
  * @author GHHu
  * @date 2023/4/13
+ * @see PropertyValueChanelEventHandler
  */
 public class SyncObjectHandler {
+    /**
+     * 同步对象实例的间隔属性
+     */
     public static final String SYNC_OBJECT_TIME_MILLIS = "SYNC_OBJECT_TIME_MILLIS";
     /**
-     * 每秒同步一次实例
+     * 同步对象实例的间隔毫秒数
      */
     private static int syncObjectTimeMillis = 1000;
 
+    /**
+     * Netty Channel
+     */
     private final Set<Channel> channels;
 
     public SyncObjectHandler(Set<Channel> channels) {
@@ -45,6 +54,7 @@ public class SyncObjectHandler {
                 if (service == null) {
                     continue;
                 }
+                // 获取 MutableJson PropertyValue 事件队列
                 BlockingQueue<List<CollectionUpdateData>> blockingQueue = service.getEventQueue();
                 for (Channel channel : new HashSet<>(channels)) {
                     if (!channel.isWritable()) {

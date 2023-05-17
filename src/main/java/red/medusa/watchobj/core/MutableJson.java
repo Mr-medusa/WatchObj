@@ -365,10 +365,6 @@ public class MutableJson {
         return updatePropertyValuesForCollection(new ArrayList<>(), p -> true);
     }
 
-    public List<CollectionUpdateData> updatePropertyValuesForCollection(Predicate<PropertyValue> propertyValue) {
-        return updatePropertyValuesForCollection(new ArrayList<>(), propertyValue);
-    }
-
     public synchronized List<CollectionUpdateData> updatePropertyValuesForCollection(List<Object> updateObjects, Predicate<PropertyValue> predicate) {
         List<CollectionUpdateData> collectionUpdateData = new ArrayList<>();
         for (PropertyValue collectionToPropertyValue : new ArrayList<>(collectionToPropertyValues)) {

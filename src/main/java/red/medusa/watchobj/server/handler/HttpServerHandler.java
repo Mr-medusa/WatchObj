@@ -13,6 +13,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+/**
+ * Http Server
+ *
+ * @author GHHu
+ * @date 2023/5/17
+ */
 public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
     @Override

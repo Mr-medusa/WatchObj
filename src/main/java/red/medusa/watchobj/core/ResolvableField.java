@@ -9,6 +9,33 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 解析具体的泛型字段类型
+ * <p>
+ * example:
+ *
+ * <pre>
+ *     public static class O<I> {
+ *         String str;
+ *         I[] i;
+ *     }
+ *     public static class Foo<T> extends O<T> {
+ *         T t;
+ *     }
+ *
+ *     public static class Bar extends Foo<BigDecimal> {
+ *
+ *     }
+ *     public static void main(String[] args) throws Exception {
+ *         Field strField = O.class.getDeclaredField("str");
+ *         Field iField = O.class.getDeclaredField("i");
+ *         System.out.println(new ResolvableField(strField, Bar.class).resolved());
+ *         System.out.println(new ResolvableField(iField, Bar.class).resolved());
+ *         System.out.println(new ResolvableField(iField, Bar.class).generics(0));
+ *         // output:
+ *         class java.lang.String
+ *         class [Ljava.math.BigDecimal;
+ *         class java.math.BigDecimal
+ *     }
+ * </pre>
  *
  * @author GHHu
  * @date 2023/4/3
@@ -86,7 +113,6 @@ public class ResolvableField {
             }
             holder = parentHolder;
             objClass = objClass.getSuperclass();
-
         }
         return holder;
     }
@@ -131,24 +157,29 @@ public class ResolvableField {
         }
         this.pre = resolvableField;
         ResolvableField tempResolvableField = resolvableField;
+        String fieldGenericName = genericType.getTypeName();
+        if (genericType instanceof GenericArrayType) {
+            fieldGenericName = ((GenericArrayType) genericType).getGenericComponentType().getTypeName();
+        }
         while (tempResolvableField != null) {
             for (int i = 0; i < tempResolvableField.ownerNames.length; i++) {
                 Type ownerActualImplType = tempResolvableField.ownerActualImplTypes[i];
                 if (ownerActualImplType instanceof TypeVariable<?>) {
                     this.resolved = (Class<?>) ((TypeVariable<?>) ownerActualImplType).getBounds()[0];
                 }
-                else {
-                    if (ownerActualImplType instanceof Class<?>) {
-                        this.resolved = (Class<?>) ownerActualImplType;
-                    }
-                    else if (ownerActualImplType instanceof ParameterizedType) {
-                        this.resolved = (Class<?>) ((ParameterizedType) ownerActualImplType).getRawType();
-                    }
+                else if (ownerActualImplType instanceof Class<?>) {
+                    this.resolved = (Class<?>) ownerActualImplType;
+                }
+                else if (ownerActualImplType instanceof ParameterizedType) {
+                    this.resolved = (Class<?>) ((ParameterizedType) ownerActualImplType).getRawType();
                 }
                 if (this.resolved != null) {
                     this.resolved = resolvePrimitiveIfNecessary(this.resolved);
                 }
-                if (tempResolvableField.ownerNames[i].equals(genericType.getTypeName())) {
+                if (tempResolvableField.ownerNames[i].equals(fieldGenericName)) {
+                    if (genericType instanceof GenericArrayType) {
+                        this.resolved = Array.newInstance(this.resolved, 0).getClass();
+                    }
                     cache.put(key(), this.resolved);
                     return this.resolved;
                 }
@@ -237,6 +268,11 @@ public class ResolvableField {
         return generic;
     }
 
+    /**
+     * 解析数组或集合类型元素类型
+     *
+     * @param index 数组或集合类型索引:0 Map类型 key:0 value:1
+     */
     public Class<?> generics(int... index) {
         if (this.resolved == null) {
             resolved0();

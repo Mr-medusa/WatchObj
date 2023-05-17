@@ -2,6 +2,8 @@ package red.medusa.watchobj.core;
 
 
 /**
+ * PropertyValue 属性值改变事件
+ *
  * @see PropertyValue#setPropertyValueByName(String, Object)
  */
 public class PropertyValueChangeEvent {

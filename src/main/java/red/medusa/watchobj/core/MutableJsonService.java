@@ -11,23 +11,53 @@ import java.util.stream.Collectors;
 
 
 /**
+ * MutableJson Web 服务、启用MutableJson 的集合更新监视能力、启用实例引用队列监视
+ *
  * @author GHHu
  * @date 2023/5/16
  * @see FieldPropertyValueHolder
  */
 public class MutableJsonService {
     private final MutableJson mutableJson = new MutableJson();
-
+    /**
+     * 启用 MutableJson 服务属性
+     */
     public static final String ENABLE_MUTABLE_JSON_SERVER = "ENABLE_MUTABLE_JSON_SERVER";
+    /**
+     * 启用 MutableJson 集合更新服务属性
+     */
     public static final String ENABLE_MUTABLE_JSON_UPDATE_COLLECTION = "ENABLE_MUTABLE_JSON_UPDATE_COLLECTION";
+    /**
+     * 启用 MutableJson Web 服务属性
+     */
     public static final String ENABLE_SERVER = "ENABLE_SERVER";
+    /**
+     * 实例对象更新监视间隔时间,在间隔时间后批量处理大量 Class 实例化 PropertyValue 化
+     */
     public static final String OBJECT_UPDATE_TIME_MILLIS = "OBJECT_UPDATE_TIME_MILLIS";
+    /**
+     * 字段更新监视间隔时间,在间隔时间后处理字段更新后同步修改 PropertyValue
+     */
     public static final String FIELD_UPDATE_TIME_MILLIS = "FIELD_UPDATE_TIME_MILLIS";
+    /**
+     * Class 集合字段类型更新监视隔时间,在间隔时间后处理集合更新后同步修改 PropertyValue
+     */
     public static final String COLLECTION_UPDATE_TIME_MILLIS = "COLLECTION_UPDATE_TIME_MILLIS";
+    /**
+     * Class 实例引用队列监视间隔时间,在间隔时间后处理被 gc 后的实例并同步到对应 PropertyValue
+     */
     public static final String WEAK_REFERENCE_UPDATE_TIME_MILLIS = "WEAK_REFERENCE_UPDATE_TIMEMILLIS";
+    /**
+     * 服务端端口
+     */
     public static final String SERVER_HTTP_PORT = "SERVER_HTTP_PORT";
+    /**
+     * WebService 端口
+     */
     public static final String SERVER_WEBSOCKET_PORT = "SERVER_WEBSOCKET_PORT";
-
+    /**
+     * 被观察的 Class 实例
+     */
     private final Set<Object> watchedObjects = Collections.synchronizedSet(new LinkedHashSet<>());
     /**
      * 字段属性值包装类集合
@@ -237,14 +267,6 @@ public class MutableJsonService {
     public void enableServer() {
         if (!enableServer || !enableMutableJson) {
             return;
-            // new Thread(() -> {
-            //     try {
-            //         TimeUnit.SECONDS.sleep(5);
-            //     } catch (InterruptedException exception) {
-            //         exception.printStackTrace();
-            //     }
-            // new HttpServer(8,8).bind();
-            // }).start();
         }
         System.setProperty(ENABLE_MUTABLE_JSON_SERVER, "true");
         System.setProperty(ENABLE_SERVER, "true");
@@ -317,7 +339,7 @@ public class MutableJsonService {
         this.mutableJson.getCollectionToPropertyValues().forEach(it -> it.updateValue(new ArrayList<>()));
     }
 
-    // ---
+    // --- getter/setter methods
     public int getCollectionUpdateTimeMillis() {
         return collectionUpdateTimeMillis;
     }

@@ -7,6 +7,14 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import red.medusa.watchobj.core.web.PropertyValueChanelEventHandler;
 import red.medusa.watchobj.core.Logger;
 
+/**
+ * 处理 WebService Server 事件,交互 MutableJson 事件
+ *
+ * @author GHHu
+ * @date 2023/5/17
+ * @see red.medusa.watchobj.core.MutableJson
+ * @see red.medusa.watchobj.core.MutableJsonService
+ */
 public class TextWebSocketHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {
     static final PropertyValueChanelEventHandler handler = new PropertyValueChanelEventHandler();
 
